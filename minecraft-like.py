@@ -12,7 +12,7 @@ textures = {
 }
 
 sky_bg = load_texture("assets/textures/Sky.png")
-build_sound = Audio("assets/sounds/Build_Sound.wav", loop=False, autoplay=False)
+build_sound = Audio("assets/sfx/Build_Sound.wav", loop=False, autoplay=False)
 
 block_pick = 1
 
@@ -55,25 +55,32 @@ class Tree(Entity):
             parent=scene,
             position=position,
             model="assets/models/Lowpoly_tree_sample.obj",
-            scale=(0.5,0.5,0.5),
+            scale=(0.6,0.6,0.6),
             collider="mesh",
         )
 
 def generate_trees(num_trees=3, terrain_size=20):
     for _ in range(num_trees):
         x = random.randint(0, terrain_size-1)
-        y = 0
+        y = 3
         z = random.randint(0, terrain_size-1)
         Tree(position=(x,y,z))
 
-generate_trees()
+def generate_terrain():
+    height = 5
 
-for z in range(20):
-    for x in range(20):
-        block = Block(position=(x,0,z))
-        bedrock = Block(position=(x,-1,z), texture=textures[5], breakable=False)
+    for z in range(20):
+        for x in range(20):
 
+            for y in range(height):
+                if y == height-1:
+                    Block(position=(x,y,z), texture=textures[1])
+                elif y >= height-3:
+                    Block(position=(x,y,z), texture=textures[2])
+                else:
+                    Block(position=(x,y,z), texture=textures[5])
 
+            Block(position=(x,-1,z), texture=textures[5], breakable=False)
 
 def update():
     global block_pick
@@ -94,9 +101,8 @@ def update():
 player = FirstPersonController(position=(10,10,10))
 player.cursor.visible = False
 sky = Sky()
-
-
-
+generate_trees()
+generate_terrain()
 
 
 if __name__ == "__main__":
